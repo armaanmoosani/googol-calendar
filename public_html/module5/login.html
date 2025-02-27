@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" type="text/css" href="login.css">
+    <script src="https://www.google.com/recaptcha/api.js?render=6LcS4OIqAAAAAHmo-mzM7UWBlhfmxvyh7SNs2_us"></script>
+    <script defer src="login.js"></script>
+</head>
+
+<body>
+    <h1>Login</h1>
+    <form id="login-form">
+        <input type="hidden" id="token" name="token" value="">
+        <input type="hidden" id="recaptcha-token" name="recaptcha-token" value="">
+        <label>Username</label> <br>
+        <input type="text" id="username" placeholder="Username" required>
+        <br><br>
+        <label>Password</label> <br>
+        <input type="password" id="password" placeholder="Password" required>
+        <br><br>
+        <button id="login">Login</button>
+        <p id="message"></p>
+    </form>
+    <form action="newaccount.html">
+        <button type="submit">Sign Up</button>
+    </form>
+
+    <script>
+        fetch('get_token.php')
+            .then(response => response.json())
+            .then(data => document.getElementById("token").value = data.token)
+            .catch(error => console.error("Token fetch error:", error));
+    </script>
+</body>
+
+</html>
