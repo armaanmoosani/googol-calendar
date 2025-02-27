@@ -1,4 +1,5 @@
 <?php
+ini_set("session.cookie_httponly", 1);
 session_start();
 require 'db.php';
 header("Content-Type: application/json");
@@ -32,10 +33,6 @@ if ($responseKeys['success'] != true || $responseKeys['score'] < 0.5) {
     exit;
 }
 
-if (!hash_equals($_SESSION['token'], $json_obj['token'])) {
-    echo json_encode(["success" => false, "message" => "Invalid token"]);
-    exit;
-}
 $username = htmlentities(trim($json_obj['username']));
 $password = $json_obj['password'];
 
