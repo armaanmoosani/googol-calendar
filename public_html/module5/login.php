@@ -1,5 +1,6 @@
 <?php
 ini_set("session.cookie_httponly", 1);
+session_name("MY_SECURE_SESSION");
 session_start();
 require 'db.php';
 header("Content-Type: application/json");
@@ -9,21 +10,19 @@ if (!$json_obj) {
     echo json_encode(["success" => false, "message" => "Invalid request"]);
     exit;
 }
-
 if (!isset($_SESSION['token'])) {
     $_SESSION['token'] = bin2hex(random_bytes(32));
 }
-
 if (!hash_equals($_SESSION['token'], $json_obj['token'])) {
     echo json_encode(["success" => false, "message" => "Request forgery detected"]);
     exit;
 }
-
 $secret_key = getenv("RECAPTCHA_V3_SECRET_KEY");
 if (!$secret_key) {
     echo json_encode(["success" => false, "message" => "reCAPTCHA secret key is not set properly."]);
     exit;
 }
+//cite: https://developers.google.com/recaptcha/docs/v3
 $recaptcha_response = $json_obj['recaptchaResponse'];
 $verifyUrl = 'https://www.google.com/recaptcha/api/siteverify';
 $response = file_get_contents($verifyUrl . '?secret=' . $secret_key . '&response=' . $recaptcha_response);
@@ -45,8 +44,7 @@ $stmt->close();
 
 if ($cnt == 1 && password_verify($password, $pwd_hash)) {
     $_SESSION['user_id'] = $user_id;
-    $_SESSION['token'] = bin2hex(random_bytes(32)); 
-    echo json_encode(["success" => true, "redirect" => "index.html"]);
+    echo json_encode(["success" => true, "redirect" => "login.html"]);
 } else {
     echo json_encode(["success" => false, "message" => "Incorrect Username or Password"]);
 }

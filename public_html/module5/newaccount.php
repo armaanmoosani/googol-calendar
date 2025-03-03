@@ -1,5 +1,6 @@
 <?php
 ini_set("session.cookie_httponly", 1);
+session_name("MY_SECURE_SESSION");
 session_start();
 require 'db.php';
 header("Content-Type: application/json");
@@ -18,12 +19,7 @@ if (!hash_equals($_SESSION['token'], $json_obj['token'])) {
     echo json_encode(["success" => false, "message" => "Request forgery detected"]);
     exit;
 }
-
 $secret_key = getenv("RECAPTCHA_V3_SECRET_KEY");
-if (!$secret_key) {
-    echo json_encode(["success" => false, "message" => "reCAPTCHA secret key is not set properly."]);
-    exit;
-}
 $recaptcha_response = $json_obj['recaptchaResponse'];
 $verifyUrl = 'https://www.google.com/recaptcha/api/siteverify';
 $response = file_get_contents($verifyUrl . '?secret=' . $secret_key . '&response=' . $recaptcha_response);
