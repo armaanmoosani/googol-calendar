@@ -117,6 +117,7 @@ document.getElementById("logout").addEventListener("click", function () {
                     document.getElementById("login-token").value = data.token;
                     document.getElementById("signup-token").value = data.token;
                 }
+                document.getElementById("myNav").style.height = "0%";
                 checkLoginStatus();
             }
         })
