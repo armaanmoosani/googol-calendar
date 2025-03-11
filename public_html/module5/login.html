@@ -5,13 +5,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Googol Calendar</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.0/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.13.0/jquery-ui.min.js"></script>
     <link rel="stylesheet" type="text/css" href="login.css">
+    <link rel="stylesheet" type="text/css" href="calendar.css">
     <script src="https://www.google.com/recaptcha/api.js?render=6LcS4OIqAAAAAHmo-mzM7UWBlhfmxvyh7SNs2_us"></script>
     <script defer src="login.js"></script>
+    <script src="http://classes.engineering.wustl.edu/cse330/content/calendar.min.js"></script>
 </head>
 
 <body>
-    <!--cite: https://www.w3schools.com/howto/howto_js_curtain_menu.asp-->
+    <!--cite: https://www.w3schools.com/howto/howto_js_curtain_menu.asp -->
     <div id="myNav" class="overlay">
         <a href="javascript:void(0)" id="close" class="closebtn">&times;</a>
         <div class="overlay-content">
@@ -52,8 +57,38 @@
             </div>
         </div>
     </div>
-    <button id="open">&#x2630;</button>
-
+    <button id="open" class="open">&#x2630;</button>
+    <div id="calendar-container">
+        <div class="calendar-header">
+            <button id="prev_month_btn">&lt;</button>
+            <h2 id="monthYear"></h2>
+            <button id="next_month_btn">&gt;</button>
+        </div>
+        <table class="calendar">
+            <thead>
+                <tr>
+                    <th>SUN</th>
+                    <th>MON</th>
+                    <th>TUE</th>
+                    <th>WED</th>
+                    <th>THU</th>
+                    <th>FRI</th>
+                    <th>SAT</th>
+                </tr>
+            </thead>
+            <tbody id="calendarBody"></tbody>
+        </table>
+    </div>
+    <div id="event-creator">
+        <form id="create-event">
+            <input type="hidden" id="login-token" name="token" value="">
+            <input type="hidden" id="login-recaptcha-token" name="recaptcha-token" value="">
+            <input type="text" placeholder="Add title" id="title" required> <br>
+            <input type="text" id="time-range-display" readonly><br>
+            <div id="time-range-slider"></div>
+            <button type="submit" id="save-btn">Save</button>
+        </form>
+    </div>
 </body>
 
 </html>

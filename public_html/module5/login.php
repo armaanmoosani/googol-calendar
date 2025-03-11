@@ -44,9 +44,8 @@ $stmt->close();
 
 if ($cnt == 1 && password_verify($password, $pwd_hash)) {
     $_SESSION['user_id'] = $user_id;
-    echo json_encode(["success" => true, "redirect" => "login.html"]);
+    echo json_encode(["success" => true]);
 } else {
-    echo json_encode(["success" => false, "message" => "Incorrect Username or Password"]);
+    echo json_encode(["success" => false]);
 }
-exit;
 ?>
