@@ -1,9 +1,9 @@
 let isUserLoggedIn = false;
 function loginAjax() {
-    const username = document.getElementById("username").value;
-    const password = document.getElementById("password").value;
-    const recaptchaResponse = document.getElementById("login-recaptcha-token").value;
-    const token = document.getElementById("login-token").value;
+    let username = document.getElementById("username").value;
+    let password = document.getElementById("password").value;
+    let recaptchaResponse = document.getElementById("login-recaptcha-token").value;
+    let token = document.getElementById("login-token").value;
 
     const data = {
         username: username,
@@ -41,7 +41,7 @@ function checkLoginStatus() {
         .then(response => response.json())
         .then(data => {
             if (data.loggedIn) {
-                document.getElementById("event-creator").style.display = "none";
+                document.getElementById("event-creator").classList.remove("active");
                 document.getElementById("open-login").style.display = "none";
                 document.getElementById("open-signup").style.display = "none";
                 loginCurtain.classList.remove("active");
@@ -51,7 +51,7 @@ function checkLoginStatus() {
                 console.log("Entered true");
                 updateCalendar();
             } else {
-                document.getElementById("event-creator").style.display = "none";
+                document.getElementById("event-creator").classList.remove("active");
                 document.getElementById("open-login").style.display = "block";
                 document.getElementById("open-signup").style.display = "block";
                 document.getElementById("logout").style.display = "none";
@@ -80,11 +80,11 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 function signupAjax() {
-    const newuser = document.getElementById("newuser").value;
-    const newpassword = document.getElementById("newpassword").value;
-    const confirmpassword = document.getElementById("confirmpassword").value;
-    const recaptchaResponse = document.getElementById("signup-recaptcha-token").value;
-    const token = document.getElementById("signup-token").value;
+    let newuser = document.getElementById("newuser").value;
+    let newpassword = document.getElementById("newpassword").value;
+    let confirmpassword = document.getElementById("confirmpassword").value;
+    let recaptchaResponse = document.getElementById("signup-recaptcha-token").value;
+    let token = document.getElementById("signup-token").value;
 
     if (newpassword.length < 10) {
         document.getElementById("signup-message").textContent = "Password must be at least 10 characters.";
@@ -112,7 +112,7 @@ function signupAjax() {
         .then(response => response.json())
         .then(result => {
             if (result.success) {
-                const signupCurtain = document.getElementById("signupCurtain");
+                let signupCurtain = document.getElementById("signupCurtain");
                 signupCurtain.classList.remove("active");
                 checkLoginStatus();
             } else {
@@ -156,15 +156,15 @@ function closeNav() {
 }
 
 document.getElementById("open-login").addEventListener("click", function () {
-    const loginCurtain = document.getElementById("loginCurtain");
-    const signupCurtain = document.getElementById("signupCurtain");
+    let loginCurtain = document.getElementById("loginCurtain");
+    let signupCurtain = document.getElementById("signupCurtain");
     loginCurtain.classList.toggle("active");
     signupCurtain.classList.remove("active");
 });
 
 document.getElementById("open-signup").addEventListener("click", function () {
-    const signupCurtain = document.getElementById("signupCurtain");
-    const loginCurtain = document.getElementById("loginCurtain");
+    let signupCurtain = document.getElementById("signupCurtain");
+    let loginCurtain = document.getElementById("loginCurtain");
     signupCurtain.classList.toggle("active");
     loginCurtain.classList.remove("active");
 });
@@ -225,7 +225,7 @@ let currentMonth = new Month(new Date().getFullYear(), new Date().getMonth());
 let currentSelectedDate = null;
 function updateCalendar() {
     //populates the calendar
-    const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    let months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
     let calendarBody = document.getElementById("calendarBody");
     let monthYearHeader = document.getElementById("monthYear");
     calendarBody.textContent = ""; //clears calendar before populating
@@ -253,30 +253,27 @@ function updateCalendar() {
                 }
                 //checks if logged in with an ajax request to server which then allows a user to create an event
                 if (isUserLoggedIn) {
-                    cell.addEventListener("click", function () {
+                    cell.addEventListener("click", function (e) {
+                        e.stopPropagation();
+                        let widget = document.getElementById("event-creator");
                         let clickedDate = this.getAttribute("data-date");
-                        const widget = document.getElementById("event-creator");
-                        if (currentSelectedDate === clickedDate) {
-                            widget.style.display = "none";
+                        if (widget.classList.contains("active")) {
+                            widget.classList.remove("active");
                             currentSelectedDate = null;
+                            return;
                         }
-                        else {
-                            currentSelectedDate = clickedDate;
-                            $("#time-range-slider").slider("values", [480, 1020]);
-                            $("#time-range-display").val(minutesToTime(480) + " - " + minutesToTime(1020));
-
-                            //source/inspo for styling: https://stackoverflow.com/questions/73515135/how-to-set-multiple-elements-style-via-getboundingclientrect
-                            const cellRect = this.getBoundingClientRect();
-                            const containerRect = document.getElementById("calendar-container").getBoundingClientRect();
-                            if (d <= 3) {
-                                widget.style.left = (cellRect.right - containerRect.left + 100) + "px";
-                            }
-                            else {
-                                widget.style.left = (cellRect.left - containerRect.left - 180) + "px";
-                            }
-                            widget.style.top = (cellRect.top - containerRect.top) + "px";
-                            widget.style.display = "block";
+                        currentSelectedDate = clickedDate;
+                        $("#time-range-slider").slider("values", [480, 1020]);
+                        $("#time-range-display").val(minutesToTime(480) + " - " + minutesToTime(1020));
+                        let cellRect = this.getBoundingClientRect();
+                        let containerRect = document.getElementById("calendar-container").getBoundingClientRect();
+                        if (d <= 3) {
+                            widget.style.left = (cellRect.right - containerRect.left + 158) + "px";
+                        } else {
+                            widget.style.left = (cellRect.left - containerRect.left - 115) + "px";
                         }
+                        widget.style.top = (cellRect.top - containerRect.top) + "px";
+                        widget.classList.add("active");
                     });
                 }
             }
@@ -287,11 +284,13 @@ function updateCalendar() {
 }
 document.getElementById("next_month_btn").addEventListener("click", function () {
     currentMonth = currentMonth.nextMonth();
+    document.getElementById("event-creator").classList.remove("active");
     updateCalendar();
 });
 
 document.getElementById("prev_month_btn").addEventListener("click", function () {
     currentMonth = currentMonth.prevMonth();
+    document.getElementById("event-creator").classList.remove("active");
     updateCalendar();
 });
 //jquery ui slider source: https://api.jqueryui.com/slider/
@@ -300,7 +299,7 @@ $(function () {
         range: true,
         min: 0,
         max: 1439,
-        step: 1,
+        step: 5,
         values: [480, 1020],
         slide: function (event, ui) {
             $("#time-range-display").val(minutesToTime(ui.values[0]) + " - " + minutesToTime(ui.values[1]));
@@ -315,6 +314,19 @@ $(function () {
 
 document.getElementById("create-event").addEventListener("submit", function (e) {
     e.preventDefault();
+    let eventTitle = document.getElementById("title").value;
+    let eventTimeRange = document.getElementById("time-range-display").value;
+    let date = currentSelectedDate;
+    let times = eventTimeRange.split(" - ");
+    let startTime = times[0];
+    let endTime = times[1];
+    const data = {
+        eventTitle: eventTitle,
+        startTime: startTime,
+        endTime: endTime,
+        date: date
+    };
+    console.log("Sending the following data:", data);
     fetch("create-event.php", {
         method: 'POST',
         body: JSON.stringify(data),
@@ -323,16 +335,21 @@ document.getElementById("create-event").addEventListener("submit", function (e) 
         .then(response => response.json())
         .then(result => {
             if (result.success) {
-                document.getElementById("myNav").style.height = "0%";
-                checkLoginStatus();
-                updateCalendar();
+                console.log("Event Created");
+                document.getElementById("event-creator").classList.remove("active");
+
             } else {
-                document.getElementById("message").textContent = result.message;
+                console.error("Creation Failed");
             }
         })
         .catch(err => {
-            console.error("Login error:", err);
-            document.getElementById("message").textContent = "An error occurred. Please try again.";
+            console.error("Database error:", err);
         });
-
+});
+document.addEventListener('click', function (e) {
+    const widget = document.getElementById('event-creator');
+    if (widget.classList.contains('active')) {
+        widget.classList.remove('active');
+        currentSelectedDate = null;
+    }
 });

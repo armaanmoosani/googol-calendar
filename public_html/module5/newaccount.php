@@ -53,6 +53,6 @@ if (!$stmt) {
 $stmt->bind_param('ss', $newuser, $hashed_password);
 $stmt->execute();
 $stmt->close();
-echo json_encode(["success" => true, "redirect" => "login.html"]);
+echo json_encode(["success" => true]);
 exit;
 ?>
