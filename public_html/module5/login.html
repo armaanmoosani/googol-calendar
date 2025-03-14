@@ -79,6 +79,9 @@
             <tbody id="calendarBody"></tbody>
         </table>
     </div>
+    <div id="event-display">
+        <div id="event-list"></div>
+    </div>
     <div id="event-creator">
         <form id="create-event">
             <input type="hidden" id="login-token" name="token" value="">
@@ -88,6 +91,43 @@
             <div id="time-range-slider"></div>
             <button type="submit" id="save-btn">Save</button>
         </form>
+    </div>
+    <div id="event-widget" class="event-widget">
+        <div id="event-details">
+            <span id="close-widget">&times;</span>
+            <h2 id="widget-title"></h2>
+            <p id="widget-date"></p>
+            <p id="widget-time"></p>
+            <button id="edit-event-btn">&#x1F58A;</button>
+        </div>
+        <div id="event-editor">
+            <form id="edit-event">
+                <input type="hidden" id="login-token" name="token" value="">
+                <input type="hidden" id="login-recaptcha-token" name="recaptcha-token" value="">
+                <input type="text" id="widget-title-input" name="title">
+                <input type="date" id="widget-date-input" name="event_date">
+                <input type="time" id="widget-start-time-input" name="start_time">
+                <input type="time" id="widget-end-time-input" name="end_time">
+                <input type="hidden" id="event-id">
+                <button type="submit" id="save-event">Save</button>
+                <button type="button" id="cancel-edit">Cancel</button>
+            </form>
+        </div>
+    </div>
+    <div id="event-context-menu" class="context-menu">
+        <ul>
+            <li id="delete-event" class="delete-event"><span>&#128465;</span> Remove</li>
+        </ul>
+    </div>
+    <div id="dropdown-container">
+        <button id="dropdown">
+            My calendars <span id ="arrow">&#x2228;</span>
+        </button>
+        <div id="tags">
+            <label><input type="checkbox" class="filter-checkbox" value="personal" checked> Personal</label><br>
+            <label><input type="checkbox" class="filter-checkbox" value="work" checked> Work</label><br>
+            <label><input type="checkbox" class="filter-checkbox" value="school" checked> School</label><br>
+        </div>
     </div>
 </body>
 
