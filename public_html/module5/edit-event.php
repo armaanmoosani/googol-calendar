@@ -12,24 +12,26 @@ if (!$json_obj) {
     echo json_encode(["success" => false, "message" => "Invalid request"]);
     exit;
 }
+if ($_SESSION['token'] !== $json_obj['csrf']) {
+    echo json_encode(["success" => false, "message" => "CSRF token validation failed"]);
+    exit;
+}
+
 $eventId = $json_obj["event_id"];
 $eventTitle = htmlentities($json_obj["title"]);
 $startTime = htmlspecialchars($json_obj["start_time"]);
 $endTime = htmlspecialchars($json_obj["end_time"]);
 $date = htmlspecialchars($json_obj["date"]);
 $userId = $_SESSION['user_id'];
-
-// $startTime24 = DateTime::createFromFormat('g:i A', $startTime)->format('H:i:00');
-// $endTime24 = DateTime::createFromFormat('g:i A', $endTime)->format('H:i:00');
-
+$tag = htmlspecialchars($json_obj['tag']);
 $dateObj = new DateTime($date);
 $formattedDate = $dateObj->format('Y-m-d');
-$stmt = $mysqli->prepare("UPDATE events SET title=?, event_date=?, start_time=?, end_time=? WHERE id=? AND user_id=?");
+$stmt = $mysqli->prepare("UPDATE events SET title=?, event_date=?, start_time=?, end_time=?, tags=? WHERE id=? AND user_id=?");
 if (!$stmt) {
     echo json_encode(["success" => false, "message" => "Database error"]);
     exit;
 }
-$stmt->bind_param('ssssii', $eventTitle, $date, $startTime, $endTime, $eventId, $userId);
+$stmt->bind_param('sssssis', $eventTitle, $formattedDate, $startTime, $endTime, $tag, $eventId, $userId);
 $stmt->execute();
 $stmt->close();
 echo json_encode(["success" => true, "message" => "Event updated successfully"]);

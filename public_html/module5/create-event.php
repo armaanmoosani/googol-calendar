@@ -10,6 +10,10 @@ if (!$json_obj) {
     echo json_encode(["success" => false, "message" => "Invalid request"]);
     exit;
 }
+if ($_SESSION['token'] !== $json_obj['csrf']) {
+    echo json_encode(["success" => false, "message" => "CSRF token validation failed"]);
+    exit;
+}
 //time conversion: https://www.php.net/manual/en/datetime.createfromformat.php
 $eventTitle = htmlentities($json_obj["eventTitle"]);
 $startTime = htmlspecialchars($json_obj["startTime"]);
@@ -20,7 +24,7 @@ $date = htmlspecialchars($json_obj["date"]);
 $dateObj = new DateTime($date);
 $formattedDate = $dateObj->format('Y-m-d');
 $userId = $_SESSION['user_id'];
-$tags = null;
+$tags = htmlspecialchars($json_obj['tag']);
 $stmt = $mysqli->prepare("INSERT INTO events (user_id, title, event_date, start_time, end_time, tags) VALUES (?, ?, ?, ?, ?, ?)");
 if (!$stmt) {
     echo json_encode(["success" => false]);

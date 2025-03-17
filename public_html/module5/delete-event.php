@@ -10,6 +10,10 @@ if (!$json_obj) {
     echo json_encode(["success" => false, "message" => "Invalid request"]);
     exit;
 }
+if ($_SESSION['token'] !== $json_obj['csrf']) {
+    echo json_encode(["success" => false, "message" => "CSRF token validation failed"]);
+    exit;
+}
 $event_id = $json_obj['event_id'];
 $user_id = $_SESSION['user_id'];
 $stmt = $mysqli->prepare("DELETE FROM events WHERE id = ? AND user_id = ?");
