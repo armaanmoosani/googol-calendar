@@ -1,6 +1,7 @@
 let isUserLoggedIn = false;
 let currentMonth = new Month(new Date().getFullYear(), new Date().getMonth());
 let currentSelectedDate = null;
+let editTag = "";
 
 function loginAjax() {
     let username = document.getElementById("username").value;
@@ -85,7 +86,6 @@ function signupAjax() {
 }
 
 function checkLoginStatus() {
-    console.log("Entered check");
     fetch("check_login.php", {
         method: "POST",
         headers: { "Content-Type": "application/json" }
@@ -99,8 +99,8 @@ function checkLoginStatus() {
                 document.getElementById("loginCurtain").classList.remove("active");
                 document.getElementById("signupCurtain").classList.remove("active");
                 document.getElementById("logout").style.display = "block";
+                document.getElementById("dropdown").style.display = "inline-flex";
                 isUserLoggedIn = true;
-                console.log("Entered true");
                 updateCalendar();
             } else {
                 document.getElementById("event-widget").classList.remove("show");
@@ -109,11 +109,11 @@ function checkLoginStatus() {
                 document.getElementById("open-login").style.display = "block";
                 document.getElementById("open-signup").style.display = "block";
                 document.getElementById("logout").style.display = "none";
+                document.getElementById("dropdown").style.display = "none";
                 document.querySelectorAll(".calendar-event").forEach(element => {
                     element.remove();
                 });
                 isUserLoggedIn = false;
-                console.log("Entered false");
                 updateCalendar();
             }
         })
@@ -289,13 +289,18 @@ function fetchAndDisplayEvents() {
     })
         .then(response => response.json())
         .then(data => {
-            console.log("Fetched event data:", data);
             let eventsArray = [];
             if (data && data.length > 0) {
                 eventsArray = data;
             } else if (data && data.events && data.events.length > 0) {
                 eventsArray = data.events;
             }
+            let selectedTags = [];
+            document.querySelectorAll("#tags input[type='checkbox']:checked").forEach(checkbox => {
+                selectedTags.push(checkbox.value);
+            });
+            document.querySelectorAll(".calendar-event").forEach(eventElem => eventElem.remove());
+
             if (eventsArray.length > 0) {
                 document.getElementById("event-display").style.display = "block";
             } else {
@@ -303,6 +308,9 @@ function fetchAndDisplayEvents() {
             }
             eventsArray.forEach(function (event) {
                 let cell = document.querySelector('td[data-date="' + event.event_date + '"]');
+                if (!(selectedTags.some(tag => event.tags.includes(tag)))) {
+                    return;
+                }
                 if (cell) {
                     let eventElem = document.createElement("div");
                     let startTime12hr = timeTo12hrFormat(event.start_time);
@@ -311,7 +319,6 @@ function fetchAndDisplayEvents() {
                     cell.appendChild(eventElem);
                     eventElem.addEventListener("click", function (e) {
                         e.stopImmediatePropagation();
-                        console.log("Event element clicked:", e);
                         openEventWidget(event, eventElem, e);
                     });
                     document.getElementById("close-widget").addEventListener("click", function () {
@@ -344,16 +351,23 @@ function fetchAndDisplayEvents() {
         });
 }
 
+document.querySelectorAll("#tags input[type='checkbox']").forEach(function (checkbox) {
+    checkbox.addEventListener("change", fetchAndDisplayEvents);
+});
+
 function deleteEvent(eventId, eventElem) {
+    let csrf = document.getElementById("login-token").value;
     fetch("delete-event.php", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ event_id: eventId })
+        body: JSON.stringify({
+            event_id: eventId,
+            csrf, csrf
+        })
     })
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                console.log("Event deleted successfully:", eventId);
                 eventElem.remove();
             } else {
                 console.error("Error deleting event:", data.message);
@@ -376,6 +390,7 @@ function updateCalendar() {
 }
 
 function openEventWidget(event, eventElem, clickEvent) {
+    clickEvent.stopPropagation();
     const widget = document.getElementById("event-widget");
     const widgetTitle = document.getElementById("widget-title");
     const widgetDate = document.getElementById("widget-date");
@@ -396,7 +411,7 @@ function openEventWidget(event, eventElem, clickEvent) {
     widget.setAttribute("data-event-date", event.event_date);
     widget.setAttribute("data-start-time", event.start_time);
     widget.setAttribute("data-end-time", event.end_time);
-
+    widget.setAttribute("data-tag", event.tags);
     const container = document.getElementById("calendar-container");
     if (container) {
         const containerRect = container.getBoundingClientRect();
@@ -408,33 +423,72 @@ function openEventWidget(event, eventElem, clickEvent) {
     }
 
     widget.classList.add("show");
+    document.getElementById("event-details").style.display = "block";
     document.getElementById("event-creator").classList.remove("active");
     document.getElementById("event-display").style.display = "block";
-    document.getElementById("event-editor").style.display = "none";
     widget.style.display = "block";
 }
 document.getElementById("edit-event-btn").addEventListener("click", function (event) {
-    document.getElementById("event-details").style.display = "none";
-    const widget = document.getElementById("event-widget");
-
     document.getElementById("event-display").style.display = "none";
-    const editor = document.getElementById("event-editor");
-    editor.style.display = "block";
+    document.getElementById("event-editor").style.display = "flex";
+    document.getElementById("save-event").style.display = "inline-flex";
+    document.getElementById("cancel-edit").style.display = "inline-flex";
+    document.getElementById("event-details").style.display = "none";
 
+    const widget = document.getElementById("event-widget");
     const title = document.getElementById("widget-title").textContent;
-
     const eventDate = widget.getAttribute("data-event-date");
     const startTime = widget.getAttribute("data-start-time");
     const endTime = widget.getAttribute("data-end-time");
     const eventId = widget.getAttribute("data-event-id");
+    let eventTag = widget.getAttribute("data-tag");
+    editTag = eventTag;
 
     document.getElementById("widget-title-input").value = title;
     document.getElementById("widget-date-input").value = eventDate;
     document.getElementById("widget-start-time-input").value = startTime;
     document.getElementById("widget-end-time-input").value = endTime;
     document.getElementById("event-id").value = eventId;
+    const dropdownLabel = document.getElementById("dropdown-label-edit");
+    let foundTag = false;
+    document.querySelectorAll("#tags-dropdown-edit a").forEach(function (link) {
+        if (link.getAttribute("data-value") === eventTag) {
+            link.classList.add("active");
+            dropdownLabel.textContent = link.textContent;
+            foundTag = true;
+        } else {
+            link.classList.remove("active");
+        }
+    });
+    if (!foundTag) {
+        document.getElementById("dropdown-label-edit").textContent = "Select a tag";
+    }
+});
 
+document.getElementById("edit-dropdown").addEventListener("click", function (e) {
+    e.stopPropagation();
+    const dropdown = document.getElementById("tags-dropdown-edit");
+    const arrow = document.getElementById("tag-arrow-edit");
 
+    if (dropdown.classList.contains("show")) {
+        dropdown.classList.remove("show");
+        arrow.textContent = "▼";
+    } else {
+        dropdown.classList.add("show");
+        arrow.textContent = "▲";
+    }
+});
+
+document.querySelectorAll("#tags-dropdown-edit a").forEach(function (link) {
+    link.addEventListener("click", function (e) {
+        e.preventDefault();
+        editTag = this.getAttribute("data-value");
+        document.getElementById("dropdown-label-edit").textContent = this.textContent;
+        document.getElementById("tags-dropdown-edit").classList.remove("show");
+        document.getElementById("tag-arrow-edit").textContent = "▼";
+        document.querySelectorAll("#tags-dropdown-edit a").forEach((el) => el.classList.remove("active"));
+        this.classList.add("active");
+    });
 });
 
 document.getElementById("save-event").addEventListener("click", function (e) {
@@ -444,10 +498,21 @@ document.getElementById("save-event").addEventListener("click", function (e) {
     const updatedStartTime = document.getElementById("widget-start-time-input").value;
     const updatedEndTime = document.getElementById("widget-end-time-input").value;
     const eventId = document.getElementById("event-id").value;
-    console.log(eventId);
-    console.log(updatedStartTime);
-    console.log(updatedEndTime);
-    console.log(updatedDate);
+    const csrf = document.getElementById("edit-token").value;
+    const tag = editTag;
+
+    document.getElementById("event-editor").style.display = "none";
+    document.getElementById("save-event").style.display = "none";
+    document.getElementById("cancel-edit").style.display = "none";
+
+    grecaptcha.ready(function () {
+        grecaptcha.execute("6LcS4OIqAAAAAHmo-mzM7UWBlhfmxvyh7SNs2_us", { action: "login" })
+            .then(function (token) {
+                document.getElementById("edit-recaptcha-token").value = token;
+                loginAjax();
+            });
+    });
+
     fetch("edit-event.php", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -456,21 +521,30 @@ document.getElementById("save-event").addEventListener("click", function (e) {
             date: updatedDate,
             start_time: updatedStartTime,
             end_time: updatedEndTime,
-            event_id: eventId
+            event_id: eventId,
+            tag: tag,
+            csrf: csrf
         })
     })
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                console.log("Success:", data);
                 document.getElementById("event-widget").classList.remove("show");
                 updateCalendar();
             }
             else {
-                console.log("Fail");
+                console.log("Fail", data);
+                document.getElementById("event-widget").classList.remove("show");
+                updateCalendar();
             }
         })
         .catch(error => console.error("Error saving event:", error));
+});
+document.getElementById("cancel-edit").addEventListener("click", function () {
+    document.getElementById("event-editor").style.display = "none";
+    document.getElementById("save-event").style.display = "none";
+    document.getElementById("cancel-edit").style.display = "none";
+    document.getElementById("event-details").style.display = "block";
 });
 
 /* jQuery UI Slider cite: https://api.jqueryui.com/slider/ */
@@ -507,6 +581,8 @@ function fetchToken() {
         .then(data => {
             document.getElementById("login-token").value = data.token;
             document.getElementById("signup-token").value = data.token;
+            document.getElementById("creator-token").value = data.token;
+            document.getElementById("edit-token").value = data.token;
         })
         .catch(error => console.error("Token fetch error:", error));
 }
@@ -559,6 +635,33 @@ document.getElementById("open-signup").addEventListener("click", function () {
 // Open and close navigation overlay cite: https://www.w3schools.com/howto/howto_js_curtain_menu.asp)
 document.getElementById("open").addEventListener("click", openNav, false);
 document.getElementById("close").addEventListener("click", closeNav, false);
+
+let tag = "";
+document.getElementById("create-dropdown").addEventListener("click", function (e) {
+    e.stopPropagation();
+    const dropdown = document.getElementById("tags-dropdown");
+    const arrow = document.getElementById("tag-arrow");
+
+    if (dropdown.classList.contains("show")) {
+        dropdown.classList.remove("show");
+        arrow.textContent = "▼";
+    } else {
+        dropdown.classList.add("show");
+        arrow.textContent = "▲";
+    }
+});
+
+
+document.querySelectorAll("#tags-dropdown a").forEach(function (link) {
+    link.addEventListener("click", function (e) {
+        e.preventDefault();
+        tag = this.getAttribute("data-value");
+        document.getElementById("dropdown-label").textContent = this.textContent;
+        document.getElementById("tags-dropdown").classList.remove("show");
+        document.getElementById("tag-arrow").textContent = "▼";
+    });
+});
+
 document.getElementById("create-event").addEventListener("submit", function (e) {
     e.preventDefault();
     let eventTitle = document.getElementById("title").value;
@@ -567,12 +670,23 @@ document.getElementById("create-event").addEventListener("submit", function (e) 
     let times = eventTimeRange.split(" - ");
     let startTime = times[0];
     let endTime = times[1];
+    let csrf = document.getElementById("creator-token").value;
     const data = {
         eventTitle: eventTitle,
         startTime: startTime,
         endTime: endTime,
-        date: date
+        date: date,
+        tag: tag,
+        csrf: csrf
     };
+
+    grecaptcha.ready(function () {
+        grecaptcha.execute("6LcS4OIqAAAAAHmo-mzM7UWBlhfmxvyh7SNs2_us", { action: "create-event" })
+            .then(function (token) {
+                document.getElementById("creator-recaptcha-token").value = token;
+            });
+    });
+
     fetch("create-event.php", {
         method: "POST",
         body: JSON.stringify(data),
@@ -592,40 +706,50 @@ document.getElementById("create-event").addEventListener("submit", function (e) 
         });
 });
 
+
+
 const dropdown = document.getElementById('dropdown');
 const tags = document.getElementById('tags');
-dropdown.addEventListener('click', function() {
+dropdown.addEventListener('click', function () {
     tags.classList.toggle('show');
-    
+
     const arrow = document.getElementById('arrow');
     if (tags.classList.contains('show')) {
-        arrow.textContent = '∧'; 
+        arrow.textContent = '∧';
     } else {
-        arrow.textContent = '∨'; 
-        
+        arrow.textContent = '∨';
+
     }
 });
 
 document.addEventListener("click", function (e) {
     const widget = document.getElementById("event-widget");
-    const editor = document.getElementById("event-editor");
-    const display = document.getElementById("event-display");
     const eventCreator = document.getElementById("event-creator");
+    const contextMenu = document.getElementById("event-context-menu");
 
-    if (!e.target.closest("#event-widget") && !e.target.closest("#event-editor") && !e.target.closest("#event-creator")) {
-        display.style.display = "none";
-        editor.style.display = "none";
+    if (!e.target.closest("#event-widget") && !e.target.closest("#event-creator")) {
+        widget.style.display = "none";
+        document.getElementById("event-display").style.display = "block";
+        document.getElementById("event-editor").style.display = "none";
+        document.getElementById("save-event").style.display = "none";
+        document.getElementById("cancel-edit").style.display = "none";
 
-        if (widget.classList.contains("show")) {
-            widget.classList.remove("show");
-        }
         if (eventCreator && eventCreator.classList.contains("active") && !e.target.closest("#event-creator")) {
             eventCreator.classList.remove("active");
         }
     }
-    const contextMenu = document.getElementById("event-context-menu");
 
-    if (!contextMenu.contains(e.target)) {
+    if (contextMenu && !contextMenu.contains(e.target)) {
         contextMenu.classList.remove("show");
+    }
+
+    const dropdown = document.getElementById("tags-dropdown");
+    const dropdownLabel = document.getElementById("dropdown-label");
+    const tagArrow = document.getElementById("tag-arrow");
+
+    if (dropdown && !e.target.closest("#dropdown-container") && dropdown.classList.contains("show")) {
+        dropdown.classList.remove("show");
+        tagArrow.textContent = "▼";
+        dropdownLabel.textContent = "Select Tags";
     }
 });
