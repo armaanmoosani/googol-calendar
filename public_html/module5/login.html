@@ -84,11 +84,25 @@
     </div>
     <div id="event-creator">
         <form id="create-event">
-            <input type="hidden" id="login-token" name="token" value="">
-            <input type="hidden" id="login-recaptcha-token" name="recaptcha-token" value="">
+            <input type="hidden" id="creator-token" name="token" value="">
+            <input type="hidden" id="creator-recaptcha-token" name="recaptcha-token" value="">
             <input type="text" placeholder="Add title" id="title" required> <br>
             <input type="text" id="time-range-display" readonly><br>
             <div id="time-range-slider"></div>
+            <div id="dropdown-container">
+                <button type="button" id="create-dropdown">
+                  <span id="dropdown-label">Select Tags</span>
+                  <span id="tag-arrow">▼</span>
+                </button>
+                <div id="tags-dropdown" class="tags-dropdown">
+                  <ul>
+                    <li><a href="#" data-value="personal">Personal</a></li>
+                    <li><a href="#" data-value="work">Work</a></li>
+                    <li><a href="#" data-value="school">School</a></li>
+                    <li><a href="#" data-value="other">Other</a></li>
+                  </ul>
+                </div>
+              </div>              
             <button type="submit" id="save-btn">Save</button>
         </form>
     </div>
@@ -102,13 +116,27 @@
         </div>
         <div id="event-editor">
             <form id="edit-event">
-                <input type="hidden" id="login-token" name="token" value="">
-                <input type="hidden" id="login-recaptcha-token" name="recaptcha-token" value="">
+                <input type="hidden" id="edit-token" name="token" value="">
+                <input type="hidden" id="edit-recaptcha-token" name="recaptcha-token" value="">
                 <input type="text" id="widget-title-input" name="title">
                 <input type="date" id="widget-date-input" name="event_date">
                 <input type="time" id="widget-start-time-input" name="start_time">
                 <input type="time" id="widget-end-time-input" name="end_time">
                 <input type="hidden" id="event-id">
+                <div id="dropdown-container-edit">
+                    <button type="button" id="edit-dropdown">
+                        <span id="dropdown-label-edit">Select Tags</span>
+                        <span id="tag-arrow-edit">▼</span>
+                    </button>
+                    <div id="tags-dropdown-edit" class="tags-dropdown">
+                        <ul>
+                            <li><a href="#" data-value="personal">Personal</a></li>
+                            <li><a href="#" data-value="work">Work</a></li>
+                            <li><a href="#" data-value="school">School</a></li>
+                            <li><a href="#" data-value="other">Other</a></li>
+                        </ul>
+                    </div>
+                </div>
                 <button type="submit" id="save-event">Save</button>
                 <button type="button" id="cancel-edit">Cancel</button>
             </form>
@@ -119,14 +147,15 @@
             <li id="delete-event" class="delete-event"><span>&#128465;</span> Remove</li>
         </ul>
     </div>
-    <div id="dropdown-container">
+    <div id="dropdown-container-calendar">
         <button id="dropdown">
             My calendars <span id ="arrow">&#x2228;</span>
         </button>
         <div id="tags">
-            <label><input type="checkbox" class="filter-checkbox" value="personal" checked> Personal</label><br>
-            <label><input type="checkbox" class="filter-checkbox" value="work" checked> Work</label><br>
-            <label><input type="checkbox" class="filter-checkbox" value="school" checked> School</label><br>
+            <label><input type="checkbox" class="filter-checkbox" id="personal" value="personal" checked> Personal</label><br>
+            <label><input type="checkbox" class="filter-checkbox" id="work" value="work" checked> Work</label><br>
+            <label><input type="checkbox" class="filter-checkbox" id="school" value="school" checked> School</label><br>
+            <label><input type="checkbox" class="filter-checkbox" id="other" value="other" checked> Other</label><br>
         </div>
     </div>
 </body>

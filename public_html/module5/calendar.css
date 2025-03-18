@@ -1,6 +1,7 @@
-body{
+body {
     font-family: 'Roboto', sans-serif;
 }
+
 #calendar-container {
     width: 80%;
     max-width: 1500px;
@@ -25,15 +26,17 @@ body{
     height: 75vh;
     max-height: 900px;
 }
+
 .calendar-slide-left {
-    transform: translateX(-100%); 
+    transform: translateX(-100%);
 }
 
 .calendar-slide-right {
-    transform: translateX(100%); 
+    transform: translateX(100%);
 }
 
-.calendar-next, .calendar-prev {
+.calendar-next,
+.calendar-prev {
     position: absolute;
     top: 0;
     left: 0;
@@ -100,7 +103,7 @@ table.calendar td.other-month {
 #event-creator {
     position: absolute;
     background-color: rgb(30, 31, 32);
-    padding: 10px;
+    padding: 12px;
     z-index: 999;
     box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.2);
     width: 250px;
@@ -134,18 +137,18 @@ table.calendar td.other-month {
     margin-top: 15px;
 }
 
-#event-creator button {
+#save-btn {
     background-color: rgb(174, 198, 246);
     color: rgb(30, 31, 32);
     padding: 8px 12px;
     border: none;
     border-radius: 25px;
     cursor: pointer;
-    margin-top: 15px;
+    margin-top: 30px;
     margin-left: 200px;
 }
 
-#event-creator button:hover {
+#save-btn:hover {
     background-color: rgb(162, 186, 235);
 }
 
@@ -153,6 +156,76 @@ table.calendar td.other-month {
     margin-top: 15px;
     color: rgb(197, 199, 197);
     margin-bottom: 20px;
+}
+
+
+#create-dropdown {
+    padding: 10px 20px;
+    background-color: rgb(51, 53, 55);
+    color: rgb(197, 199, 197);
+    border: none;
+    border-radius: 25px;
+    font-size: 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 220px;
+    transition: background-color 0.3s ease;
+}
+
+#create-dropdown:hover {
+    background-color: rgb(65, 67, 69);
+}
+
+#tag-arrow {
+    margin-left: 10px;
+    font-size: 18px;
+}
+
+#tags-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background-color: rgb(27, 27, 27);
+    border-radius: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: opacity 0.3s ease, transform 0.3s ease, visibility 0s 0.3s;
+    z-index: 999;
+}
+
+#tags-dropdown.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+    transition: opacity 0.3s ease, transform 0.3s ease, visibility 0s;
+}
+
+#tags-dropdown ul {
+    list-style: none;
+    margin: 0;
+    box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.2);
+    padding: 10px 0;
+    background-color: rgb(34, 35, 39);
+}
+
+#tags-dropdown li {
+    padding: 10px;
+    background-color: rgb(34, 35, 39);
+}
+
+#tags-dropdown li a {
+    text-decoration: none;
+    color: rgb(197, 199, 197);
+    display: block;
+}
+
+#tags-dropdown li:hover {
+    background-color: rgb(69, 71, 70);
 }
 
 .calendar-event {
@@ -235,7 +308,7 @@ table.calendar td.other-month {
 }
 
 #event-editor {
-    display: flex;
+    display: none;
     flex-direction: column;
     align-items: center;
     width: 200px;
@@ -259,8 +332,79 @@ table.calendar td.other-month {
     border-color: rgb(227, 227, 227);
 }
 
-#event-editor button {
+#edit-dropdown {
+    position: relative;
+    margin: 5px 0;
+    padding: 10px 20px;
+    background-color: rgb(51, 53, 55);
+    color: rgb(197, 199, 197);
+    border: none;
+    border-radius: 25px;
+    font-size: 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 220px;
+    transition: background-color 0.3s ease;
+}
+
+#dropdown-container-edit {
+    position: relative; 
+    width: 220px; 
+  }
+
+#tags-dropdown-edit {
+    margin: 5px 0;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background-color: rgb(27, 27, 27);
+    border-radius: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: opacity 0.3s ease, transform 0.3s ease, visibility 0s 0.3s;
+    z-index: 999;
+}
+#tags-dropdown-edit.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+    transition: opacity 0.3s ease, transform 0.3s ease, visibility 0s;
+}
+
+#tags-dropdown-edit ul {
+    list-style: none;
+    margin: 0;
+    box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.2);
+    padding: 10px 0;
+    background-color: rgb(34, 35, 39);
+    width: 100%;
+}
+
+#tags-dropdown-edit li {
+    padding: 10px;
+    background-color: rgb(34, 35, 39);
+}
+
+#tags-dropdown-edit li a {
+    text-decoration: none;
+    color: rgb(197, 199, 197);
+    display: block;
+}
+
+#tags-dropdown-edit li:hover {
+    background-color: rgb(69, 71, 70);
+}
+
+#save-event,
+#cancel-edit {
+    margin: 10px 0;
     width: auto;
+    display: none;
     padding: 6px 12px;
     font-size: 14px;
     border-radius: 8px;
@@ -331,6 +475,7 @@ table.calendar td.other-month {
     transform: scale(1);
     transition: visibility 0.2s, opacity 0.2s, transform 0.2s ease-in-out;
 }
+
 .context-menu ul li span {
     margin-right: 8px;
 }
@@ -339,20 +484,61 @@ table.calendar td.other-month {
 #tags input[type="checkbox"] {
     margin-right: 10px;
     cursor: pointer;
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgb(150, 150, 150);
 }
 
-#tags input[type="checkbox"]:checked {
-    background-color: #007aff;
+#personal {
+    border: 2px solid rgb(95, 151, 205);
 }
+
+#work {
+    border: 2px solid rgb(109, 174, 132);
+}
+
+#school {
+    border: 2px solid rgb(90, 152, 142);
+}
+
+#other {
+    border: 2px solid rgb(201, 94, 118);
+}
+
+#personal:checked {
+    accent-color: rgb(95, 151, 205);
+}
+
+#work:checked {
+    accent-color: rgb(109, 174, 132);
+}
+
+#school:checked {
+    accent-color: rgb(90, 152, 142);
+}
+
+#other:checked {
+    accent-color: rgb(201, 94, 118);
+}
+
 #dropdown-container {
-    position: absolute;
-    top: 35%; 
-    left: 10px; 
+    display: inline-block;
+    top: 35%;
+    left: 10px;
+    position: relative;
 }
+
+#dropdown-container-calendar {
+    position: absolute;
+    display: inline-block;
+    top: 35%;
+    left: 10px;
+}
+
 #dropdown {
-    padding: 5px 6px; 
-    font-weight:400;
-    background-color: rgb(27,27,27);
+    padding: 5px 6px;
+    font-weight: 400;
+    background-color: rgb(27, 27, 27);
     color: rgb(197, 199, 197);
     border: none;
     border-radius: 25px;
@@ -376,44 +562,44 @@ table.calendar td.other-month {
 
 #tags {
     padding: 15px;
+    top: 100%;
     border-radius: 25px;
     color: rgb(197, 199, 197);
-    width: 220px;
+    width: 100%;
     opacity: 0;
-    transform: translateY(-10px); 
-    visibility: hidden; 
+    transform: translateY(-10px);
+    visibility: hidden;
     position: absolute;
-    top: 35px;
-    left: 0;
     max-width: 105px;
     margin-top: 2.75px;
-    background-color: rgb(27,27,27);
+    background-color: rgb(27, 27, 27);
     box-shadow: none;
-    transition: opacity 0.2s ease, visibility 0s 0.2s, transform 0.2s ease-in-out; 
+    transition: opacity 0.2s ease, visibility 0s 0.2s, transform 0.2s ease-in-out;
 }
 
 #tags.show {
     opacity: 1;
-    visibility: visible; 
-    transform: translateY(0); 
-    transition: opacity 0.2s ease, visibility 0s 0s, transform 0.2s ease-in-out; 
+    visibility: visible;
+    transform: translateY(0);
+    transition: opacity 0.2s ease, visibility 0s 0s, transform 0.2s ease-in-out;
 }
 
 #tags label {
     display: inline-flex;
     font-size: 14px;
-    font-weight:400;
+    font-weight: 400;
     margin-bottom: 10px;
     padding: 5px;
     border-radius: 25px;
     transition: background-color 0.2s ease;
 }
+
 #tags label:hover {
     background-color: rgb(41, 43, 45);
     cursor: pointer;
 }
 
-#dropdown.open + #tags {
+#dropdown.open+#tags {
     opacity: 1;
     visibility: visible;
 }
