@@ -145,11 +145,13 @@ function logoutUser() {
 /* cite: https://www.w3schools.com/howto/howto_js_curtain_menu.asp */
 function openNav() {
     document.getElementById("myNav").style.height = "100%";
+    document.body.style.overflow = 'hidden';
 }
 
 /* cite: https://www.w3schools.com/howto/howto_js_curtain_menu.asp */
 function closeNav() {
     document.getElementById("myNav").style.height = "0%";
+    document.body.style.overflow = 'auto';
 }
 
 function minutesToTime(minutes) {

@@ -37,7 +37,9 @@ $password = $json_obj['password'];
 
 $stmt = $mysqli->prepare("SELECT COUNT(*), id, hashed_password FROM users WHERE username=?");
 $stmt->bind_param('s', $username);
-$stmt->execute();
+if(!$stmt->execute()){
+    echo json_encode(['success'=> false, 'message'=> 'Incorrect user or password']);
+}
 $stmt->bind_result($cnt, $user_id, $pwd_hash);
 $stmt->fetch();
 $stmt->close();
@@ -46,6 +48,6 @@ if ($cnt == 1 && password_verify($password, $pwd_hash)) {
     $_SESSION['user_id'] = $user_id;
     echo json_encode(["success" => true]);
 } else {
-    echo json_encode(["success" => false]);
+    echo json_encode(["success" => false, "message" => "Incorrect user or password"]);
 }
 ?>
