@@ -151,6 +151,15 @@ function openNav() {
 /* cite: https://www.w3schools.com/howto/howto_js_curtain_menu.asp */
 function closeNav() {
     document.getElementById("myNav").style.height = "0%";
+    signupCurtain.classList.remove("active");
+    loginCurtain.classList.remove("active");
+    document.getElementById("username").value = "";
+    document.getElementById("password").value = "";
+    document.getElementById("newuser").value = "";
+    document.getElementById("newpassword").value = "";
+    document.getElementById("confirmpassword").value = "";
+    document.getElementById("signup-message").textContent = "";
+    document.getElementById("message").textContent = "";
     document.body.style.overflow = 'auto';
 }
 
@@ -687,6 +696,10 @@ document.getElementById("open-login").addEventListener("click", function () {
     let signupCurtain = document.getElementById("signupCurtain");
     loginCurtain.classList.toggle("active");
     signupCurtain.classList.remove("active");
+    document.getElementById("newuser").value = "";
+    document.getElementById("newpassword").value = "";
+    document.getElementById("confirmpassword").value = "";
+    document.getElementById("signup-message").textContent = "";
 });
 
 document.getElementById("open-signup").addEventListener("click", function () {
@@ -694,6 +707,9 @@ document.getElementById("open-signup").addEventListener("click", function () {
     let loginCurtain = document.getElementById("loginCurtain");
     signupCurtain.classList.toggle("active");
     loginCurtain.classList.remove("active");
+    document.getElementById("username").value = "";
+    document.getElementById("message").textContent = "";
+    document.getElementById("password").value = "";
 });
 
 // Open and close navigation overlay cite: https://www.w3schools.com/howto/howto_js_curtain_menu.asp)
