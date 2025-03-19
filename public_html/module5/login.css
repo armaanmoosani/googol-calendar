@@ -65,6 +65,10 @@ body {
     margin-bottom: 10px;
 }
 
+#message{
+    font-size: 15px;
+}
+
 #signup-message {
     font-size: 15px;
 }
