@@ -1,36 +1,34 @@
-[![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/oEgWAMae)
-# CSE330
-Armaan Moosani 520302 @armaanmoosani
-http://ec2-3-133-108-91.us-east-2.compute.amazonaws.com/~armaanmoosani/module5/index.html
+# Googol Calendar
 
-My creative portion includes adding invisible recaptcha for forms, adding the ability for users to "tag" an event when creating and editing, and the user can filter calendar events by tag. The user can also add and edit a location to the events powered by google maps api. Lastly, a user can share events to another user. 
+Googol Calendar is an interactive, secure web-based calendar application that enables users to create, manage, and share events seamlessly. Built using PHP, MySQL, JavaScript, and CSS, this project emphasizes dynamic event management with strong security features and an intuitive user interface.
 
+## Features
 
+### Calendar Display
+- **Grid Layout**: Displays months in a grid format (5-6 weeks per month, 7-day columns)
+- **Infinite Navigation**: Users can navigate through past and future dates without limitations
+- **Visual Highlights**: Clearly distinguishes the current date and out-of-month days
+- **Aesthetic**: Visually appealing aesthetic and colors;smooth transitions for opening and closing widgets and switching months.
 
+### Event Management
+- **Create Events**: Easily add events with title, date, start/end times, location, and tags
+- **Edit & Delete**: Use context menu and click event listeners for event modifications and deletions via AJAX without page reloads
+- **Color-Coded Tags**: Events are color-coded by tag (Personal, Work, School, Other) for quick visual identification
+- **Location Integration**: Autocomplete for locations via Google Places API, with location details stored and displayed
 
-<br><br><br><br><br><br><br><br><br>
-Rubric
+### User & Sharing Features
+- **User Authentication**: Secure login/logout system with persistent sessions and server-side credential validation. User passwords are hashed and salted before being stored.
+- **Event Sharing**: Share events with other users through an autocomplete-based interface that excludes the current user using jquery ui.
+- **Data Isolation**: Users cannot access or modify events belonging to other users.
 
+### Security & Performance
+- **CSRF Protection**: All state-changing operations require a CSRF token
+- **SQL Injection Prevention**: All database queries are executed using prepared statements
+- **XSS Prevention**: User input is properly escaped before output
+- **HTTP-Only Sessions**: Session cookies are configured as HTTP-only to prevent client-side script access
+- **AJAX Operations**: All Create, Read, Update, and Delete actions occur asynchronously for a smooth user experience
+- **W3C Standards**: HTML and CSS are validated to ensure best practices and accessibility
 
-# Grading
-
-| Possible | Requirement                                                                                                     | 
- | -------- | --------------------------------------------------------------------------------------------------------------- | 
-| 5        | Calendar is displayed as a table grid with days as columns and weeks as rows, one month at a time               | 
-| 5        | User can view different months as far in the past or future as desired                                          | 
-| 5        | Events can be added, modified, and deleted                                                                      | 
-| 2        | Events have a title, date, and time                                                                             | 
-| 8        | Users can log into the site and they cannot view or manipulate events associated with other users               | 
-| 10       | All actions are performed over AJAX, without ever needing to reload the page                                    |
-| 2        | Code best practices (formatting, commenting, readability) and use of `fetch` and no `var`                       | 
-| 2        | If storing passwords, they are stored salted and encrypted                                                      | 
-| 3        | All AJAX requests that contain sensitive info or modify something on the server are performed via POST, not GET | 
-| 3        | Safe from XSS attacks (all content is escaped on output)                                                        | 
-| 2        | Safe from SQL injection attacks (must use prepared statements)                                                  | 
-| 3        | CSRF token implemented OR User-Agent implementation                                                             | 
-| 3        | Session cookie is HTTP-only                                                                                     | 
-| 2        | Page passes W3C validator                                                                                       | 
-| 4        | Site is intuitive and easy to use/navigate                                                                      | 
-| 1        | Site is visually appealing                                                                                      |
-
-## Creative Portion (15 possible)
+## System Requirements
+- **Backend**: PHP 7.4+ and MySQL 5.7+
+- **Frontend**: JavaScript and jquery/jquery ui library
