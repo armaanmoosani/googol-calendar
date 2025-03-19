@@ -247,10 +247,6 @@ table.calendar td.other-month {
     cursor: pointer;
 }
 
-.calendar-event:hover {
-    background-color: #0056b3;
-}
-
 .event-item {
     padding: 10px;
     margin-bottom: 10px;
@@ -534,6 +530,26 @@ table.calendar td.other-month {
 
 .other {
     background-color: rgb(201, 94, 118);
+}
+
+.personal:hover {
+    background-color: rgb(118, 173, 224);
+    cursor: pointer;
+}
+
+.work:hover {
+    background-color: rgb(175, 155, 172);
+    cursor: pointer;
+}
+
+.school:hover {
+    background-color: rgb(116, 189, 177);
+    cursor: pointer;
+}
+
+.other:hover {
+    background-color: rgb(222, 122, 143);
+    cursor: pointer;
 }
 
 #personal:checked {
