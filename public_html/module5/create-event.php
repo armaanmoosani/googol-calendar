@@ -25,12 +25,13 @@ $dateObj = new DateTime($date);
 $formattedDate = $dateObj->format('Y-m-d');
 $userId = $_SESSION['user_id'];
 $tags = htmlspecialchars($json_obj['tag']);
-$stmt = $mysqli->prepare("INSERT INTO events (user_id, title, event_date, start_time, end_time, tags) VALUES (?, ?, ?, ?, ?, ?)");
+$locationTitle = htmlspecialchars($json_obj['location']);
+$stmt = $mysqli->prepare("INSERT INTO events (user_id, title, event_date, start_time, end_time, tags, location_title) VALUES (?, ?, ?, ?, ?, ?, ?)");
 if (!$stmt) {
     echo json_encode(["success" => false]);
     exit;
 }
-$stmt->bind_param('isssss', $userId, $eventTitle, $formattedDate, $startTime24, $endTime24, $tags);
+$stmt->bind_param('issssss', $userId, $eventTitle, $formattedDate, $startTime24, $endTime24, $tags, $locationTitle);
 $stmt->execute();
 $stmt->close();
 echo json_encode(["success" => true]);

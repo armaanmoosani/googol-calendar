@@ -12,7 +12,7 @@ if (!$json_obj) {
 }
 $year = htmlspecialchars($json_obj['year']);
 $month = htmlspecialchars($json_obj['month']);
-$stmt = $mysqli->prepare("SELECT id, title, event_date, start_time, end_time, tags FROM events WHERE YEAR(event_date) = ? AND MONTH(event_date) = ? ORDER BY event_date, start_time");
+$stmt = $mysqli->prepare("SELECT id, title, event_date, start_time, end_time, tags, location_title FROM events WHERE YEAR(event_date) = ? AND MONTH(event_date) = ? ORDER BY event_date, start_time");
 if (!$stmt) {
     echo json_encode(["events" => []]);
     exit;
@@ -29,7 +29,8 @@ while ($row = $result->fetch_assoc()) {
         "event_date" => date("Y-m-d", strtotime($row['event_date'])),
         "start_time" => $row['start_time'],
         "end_time" => $row['end_time'],
-        "tags" => $row['tags']
+        "tags" => $row['tags'],
+        "location" => $row['location_title'] 
     ];
 }
 

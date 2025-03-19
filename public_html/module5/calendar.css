@@ -406,6 +406,7 @@ table.calendar td.other-month {
     width: auto;
     display: none;
     padding: 6px 12px;
+    margin-bottom: 1px;
     font-size: 14px;
     border-radius: 8px;
     background: rgb(30, 31, 32);
@@ -418,8 +419,17 @@ table.calendar td.other-month {
 #event-editor button:hover {
     background: rgb(40, 41, 42);
     border-color: rgb(227, 227, 227);
+    cursor: pointer;
 }
-
+#edit-event-btn{
+    background-color: rgb(30,31,32);
+    color: rgb(227, 227, 227);
+    font-size: 17px;
+    border: none;
+}
+#edit-event-btn:hover{
+    cursor: pointer;
+}
 .context-menu {
     position: absolute;
     z-index: 999;

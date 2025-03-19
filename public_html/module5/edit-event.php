@@ -26,12 +26,13 @@ $userId = $_SESSION['user_id'];
 $tag = htmlspecialchars($json_obj['tag']);
 $dateObj = new DateTime($date);
 $formattedDate = $dateObj->format('Y-m-d');
-$stmt = $mysqli->prepare("UPDATE events SET title=?, event_date=?, start_time=?, end_time=?, tags=? WHERE id=? AND user_id=?");
+$location = htmlspecialchars($json_obj['location']);
+$stmt = $mysqli->prepare("UPDATE events SET title=?, event_date=?, start_time=?, end_time=?, tags=?, location_title=? WHERE id=? AND user_id=?");
 if (!$stmt) {
     echo json_encode(["success" => false, "message" => "Database error"]);
     exit;
 }
-$stmt->bind_param('sssssis', $eventTitle, $formattedDate, $startTime, $endTime, $tag, $eventId, $userId);
+$stmt->bind_param('ssssssii', $eventTitle, $formattedDate, $startTime, $endTime, $tag, $location, $eventId, $userId);
 $stmt->execute();
 $stmt->close();
 echo json_encode(["success" => true, "message" => "Event updated successfully"]);
