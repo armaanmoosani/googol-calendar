@@ -319,6 +319,20 @@ function fetchAndDisplayEvents() {
                     let startTime12hr = timeTo12hrFormat(event.start_time);
                     eventElem.classList.add("calendar-event");
                     eventElem.textContent = `${startTime12hr}  ${event.title}`;
+                    switch (event.tags) {
+                        case 'personal':
+                            eventElem.classList.add("personal");
+                            break;
+                        case 'work':
+                            eventElem.classList.add("work");
+                            break;
+                        case 'school':
+                            eventElem.classList.add("school");
+                            break;
+                        case 'other':
+                            eventElem.classList.add("other");
+                            break;
+                    }
                     cell.appendChild(eventElem);
                     eventElem.addEventListener("click", function (e) {
                         e.stopImmediatePropagation();
@@ -410,18 +424,18 @@ function openEventWidget(event, eventElem, clickEvent) {
     const weekday = date.toLocaleString('en-US', { weekday: 'long' });
     const monthDay = date.toLocaleString('en-US', { month: 'long', day: 'numeric' });
     const calendarIcon = document.createElement("i");
-    calendarIcon.className = "fa fa-calendar-alt"; 
+    calendarIcon.className = "fa fa-calendar-alt";
     widgetTitle.textContent = event.title;
-    widgetDate.textContent = ''; 
-    widgetDate.appendChild(calendarIcon);  
+    widgetDate.textContent = '';
+    widgetDate.appendChild(calendarIcon);
     widgetDate.appendChild(document.createTextNode(` ${weekday}, ${monthDay}`));
     const eventTime = `${timeTo12hrFormat(event.start_time)} - ${timeTo12hrFormat(event.end_time)}`;
-    widgetTime.textContent = ""; 
-    widgetTime.appendChild(clockIcon); 
+    widgetTime.textContent = "";
+    widgetTime.appendChild(clockIcon);
     widgetTime.appendChild(document.createTextNode(" " + eventTime));
-    if (event.location != null) {
+    if (event.location != null && event.location.trim() != "") {
         const locationIcon = document.createElement("i");
-        locationIcon.className = "fas fa-map-marker-alt";  
+        locationIcon.className = "fas fa-map-marker-alt";
         widgetLocation.textContent = '';
         widgetLocation.appendChild(locationIcon);
         widgetLocation.appendChild(document.createTextNode(` ${event.location}`));
@@ -449,8 +463,15 @@ function openEventWidget(event, eventElem, clickEvent) {
     document.getElementById("event-details").style.display = "block";
     document.getElementById("event-creator").classList.remove("active");
     document.getElementById("event-display").style.display = "block";
+    document.getElementById("share-event").style.display = "none";
     widget.style.display = "block";
 }
+document.getElementById("share-event-btn").addEventListener("click", function (event) {
+    document.getElementById("share-event").style.display = "flex";
+    document.getElementById("event-display").style.display = "none";
+    document.getElementById("event-details").style.display = "none";
+    fetchUsers();
+});
 document.getElementById("edit-event-btn").addEventListener("click", function (event) {
     document.getElementById("event-display").style.display = "none";
     document.getElementById("event-editor").style.display = "flex";
@@ -475,7 +496,6 @@ document.getElementById("edit-event-btn").addEventListener("click", function (ev
     document.getElementById("widget-start-time-input").value = startTime;
     document.getElementById("widget-end-time-input").value = endTime;
     document.getElementById("event-id").value = eventId;
-    console.log(eventLocation);
     if (eventLocation == "null") {
         document.getElementById("edit-event-location").value = "";
     }
@@ -574,7 +594,7 @@ document.getElementById("save-event").addEventListener("click", function (e) {
                 updateCalendar();
             }
             else {
-                console.log("Fail", data);
+                console.error("Fail", data);
                 document.getElementById("event-widget").classList.remove("show");
                 updateCalendar();
             }
@@ -624,6 +644,7 @@ function fetchToken() {
             document.getElementById("signup-token").value = data.token;
             document.getElementById("creator-token").value = data.token;
             document.getElementById("edit-token").value = data.token;
+            document.getElementById("share-token").value = data.token;
         })
         .catch(error => console.error("Token fetch error:", error));
 }
@@ -737,7 +758,6 @@ async function initMapEditor() {
     });
 }
 async function initMap() {
-    console.log("Google Maps initialized");
     const { Map } = await google.maps.importLibrary("maps");
     geocoder = new google.maps.Geocoder();
     locationInput = document.getElementById('event-location');
@@ -774,7 +794,6 @@ document.getElementById("create-event").addEventListener("submit", function (e) 
     let endTime = times[1];
     let csrf = document.getElementById("creator-token").value;
     let location = document.getElementById('event-location').value;
-    console.log("Raw location input:", location);
     if (marker) {
         const locationTitle = marker.getTitle();
         document.getElementById('event-location').value = locationTitle;
@@ -834,8 +853,9 @@ document.addEventListener("click", function (e) {
     const widget = document.getElementById("event-widget");
     const eventCreator = document.getElementById("event-creator");
     const contextMenu = document.getElementById("event-context-menu");
+    const autocompleteWidget = $(".ui-autocomplete");
 
-    if (!e.target.closest("#event-widget") && !e.target.closest("#event-creator")) {
+    if (!e.target.closest("#event-widget") && !e.target.closest("#event-creator") && !autocompleteWidget.is(e.target) && !autocompleteWidget.has(e.target).length) {
         widget.style.display = "none";
         document.getElementById("event-display").style.display = "block";
         document.getElementById("event-editor").style.display = "none";
@@ -860,4 +880,77 @@ document.addEventListener("click", function (e) {
         tagArrow.textContent = "▼";
         dropdownLabel.textContent = "Select Tags";
     }
+});
+
+let usersList = [];
+function fetchUsers() {
+    let csrfToken = document.getElementById("share-token").value;
+    fetch("fetch-users.php", {
+        method: "POST",
+        body: JSON.stringify({ csrf: csrfToken }),
+        headers: { "Content-Type": "application/json" }
+    })
+        .then(response => response.json())
+        .then(data => {
+            usersList = data.users;
+            initializeAutocomplete();
+        })
+        .catch(error => console.error("Error fetching users:", error));
+}
+//cite: https://jqueryui.com/autocomplete/
+function initializeAutocomplete() {
+    $('#user-search').autocomplete({
+        source: function (request, response) {
+            const filteredUsers = usersList.filter(user =>
+                user.username.toLowerCase().includes(request.term.toLowerCase())
+            );
+            response(filteredUsers.map(user => ({
+                label: user.username,
+                value: user.username,
+                id: user.id
+            })));
+        },
+        minLength: 2,
+        select: function (event, ui) {
+            $(this).val(ui.item.value);
+            $(this).attr('data-user', ui.item.value);
+            $(this).attr('data-user-id', ui.item.id);
+            return false;
+        }
+    });
+}
+document.getElementById("share").addEventListener("submit", function (e) {
+    e.preventDefault();
+    const userId = $("#user-search").attr("data-user-id");
+    const csrfToken = document.getElementById("share-token").value;
+    const eventId = document.getElementById("event-widget").getAttribute("data-event-id");
+    fetch("share-event.php", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            event_id: eventId,
+            user_id: userId,
+            csrf: csrfToken
+        })
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                const successMessage = document.getElementById("share-success");
+                successMessage.textContent = `Event shared with ${document.getElementById("user-search").value}`;
+                successMessage.style.display = "block";
+
+                document.getElementById("user-search").value = "";
+                document.getElementById("user-search").removeAttribute("data-user-id");
+
+            } else {
+                alert("Error sharing event: " + data.message);
+            }
+        })
+        .catch(error => {
+            console.error("Error sharing event:", error);
+            alert("An error occurred while sharing the event");
+        });
 });

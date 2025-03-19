@@ -11,7 +11,7 @@ body {
     border-radius: 25px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     background-color: rgb(19, 19, 20);
-    color: white;
+    color: rgb(197, 199, 197);
     font-weight: 500;
     overflow: hidden;
     border: 1px solid rgba(118, 118, 118, 0.183);
@@ -52,7 +52,7 @@ body {
     padding: 10px 20px;
     background-color: rgb(19, 19, 20);
     font-size: 18px;
-    color: white
+    color: rgb(197, 199, 197);
 }
 
 .calendar-header button {
@@ -77,7 +77,7 @@ table.calendar th {
     padding: 10px;
     font-size: 14px;
     background-color: rgb(19, 19, 20);
-    color: white;
+    color: rgb(197, 199, 197);
 }
 
 table.calendar td {
@@ -91,7 +91,7 @@ table.calendar td {
 
 table.calendar td.today {
     background-color: #007aff;
-    color: white;
+    color: rgb(197, 199, 197);
     font-weight: bold;
 }
 
@@ -234,8 +234,7 @@ table.calendar td.other-month {
     left: 5px;
     right: 5px;
     font-size: 12px;
-    background-color: rgba(0, 123, 255, 0.7);
-    color: white;
+    color: rgb(197, 199, 197);
     padding: 2px 5px;
     border-radius: 4px;
     overflow: hidden;
@@ -350,9 +349,9 @@ table.calendar td.other-month {
 }
 
 #dropdown-container-edit {
-    position: relative; 
-    width: 220px; 
-  }
+    position: relative;
+    width: 220px;
+}
 
 #tags-dropdown-edit {
     margin: 5px 0;
@@ -369,6 +368,7 @@ table.calendar td.other-month {
     transition: opacity 0.3s ease, transform 0.3s ease, visibility 0s 0.3s;
     z-index: 999;
 }
+
 #tags-dropdown-edit.show {
     opacity: 1;
     visibility: visible;
@@ -421,15 +421,19 @@ table.calendar td.other-month {
     border-color: rgb(227, 227, 227);
     cursor: pointer;
 }
-#edit-event-btn{
-    background-color: rgb(30,31,32);
+
+#edit-event-btn {
+    background-color: rgb(30, 31, 32);
     color: rgb(227, 227, 227);
     font-size: 17px;
     border: none;
 }
-#edit-event-btn:hover{
+
+#edit-event-btn:hover {
     cursor: pointer;
+    background-color: rgb(41, 43, 45);
 }
+
 .context-menu {
     position: absolute;
     z-index: 999;
@@ -476,6 +480,7 @@ table.calendar td.other-month {
 
 .context-menu.show ul li:hover {
     background: rgb(46, 47, 48);
+    color: red;
 }
 
 .context-menu.show {
@@ -504,7 +509,7 @@ table.calendar td.other-month {
 }
 
 #work {
-    border: 2px solid rgb(109, 174, 132);
+    border: 2px solid rgb(154, 140, 152);
 }
 
 #school {
@@ -515,12 +520,28 @@ table.calendar td.other-month {
     border: 2px solid rgb(201, 94, 118);
 }
 
+.personal {
+    background-color: rgb(95, 151, 205);
+}
+
+.work {
+    background-color: rgb(154, 140, 152);
+}
+
+.school {
+    background-color: rgb(90, 152, 142);
+}
+
+.other {
+    background-color: rgb(201, 94, 118);
+}
+
 #personal:checked {
     accent-color: rgb(95, 151, 205);
 }
 
 #work:checked {
-    accent-color: rgb(109, 174, 132);
+    accent-color: rgb(154, 140, 152);
 }
 
 #school:checked {
@@ -612,4 +633,47 @@ table.calendar td.other-month {
 #dropdown.open+#tags {
     opacity: 1;
     visibility: visible;
+}
+
+#share-event {
+    display: none;
+}
+
+.ui-autocomplete {
+    z-index: 9999;
+    background-color: rgb(30, 31, 32);
+    border: none;
+    color: rgb(197, 199, 197);
+}
+
+#share-success {
+    display: none;
+}
+
+#confirm-share {
+    background-color: rgb(174, 198, 246);
+    color: rgb(30, 31, 32);
+    padding: 8px 12px;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    margin-top: 5px;
+    margin-left: 200px;
+}
+
+#confirm-share:hover {
+    background-color: rgb(162, 186, 235);
+}
+
+#share-event input {
+    width: 100%;
+    background: rgb(30, 31, 32);
+    color: rgb(227, 227, 227);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 8px;
+    margin: 5px 0;
+    border-radius: 10px;
+    font-size: 14px;
+    text-align: center;
+    box-sizing: border-box;
 }

@@ -12,12 +12,12 @@ if (!$json_obj) {
 }
 $year = htmlspecialchars($json_obj['year']);
 $month = htmlspecialchars($json_obj['month']);
-$stmt = $mysqli->prepare("SELECT id, title, event_date, start_time, end_time, tags, location_title FROM events WHERE YEAR(event_date) = ? AND MONTH(event_date) = ? ORDER BY event_date, start_time");
+$stmt = $mysqli->prepare("SELECT id, title, event_date, start_time, end_time, tags, location_title FROM events WHERE YEAR(event_date) = ? AND MONTH(event_date) = ? AND user_id = ? ORDER BY event_date, start_time");
 if (!$stmt) {
     echo json_encode(["events" => []]);
     exit;
 }
-$stmt->bind_param("ss", $year, $month);
+$stmt->bind_param("ssi", $year, $month, $_SESSION['user_id']);
 $stmt->execute();
 $result = $stmt->get_result();
 

@@ -91,7 +91,7 @@
         <table class="calendar">
             <thead>
                 <tr>
-                    <th>SUN</th> 
+                    <th>SUN</th>
                     <th>MON</th>
                     <th>TUE</th>
                     <th>WED</th>
@@ -113,7 +113,7 @@
             <input type="text" placeholder="Add title" id="title" required> <br>
             <input type="text" id="time-range-display" readonly><br>
             <div id="time-range-slider"></div>
-            <input type="text" id="event-location" placeholder="Add location" required> <br><br>
+            <input type="text" id="event-location" placeholder="Add location"> <br><br>
             <div id="dropdown-container">
                 <button type="button" id="create-dropdown">
                     <span id="dropdown-label">Select Tags</span>
@@ -139,6 +139,16 @@
             <p id="widget-time"></p>
             <p id="widget-location"></p>
             <button id="edit-event-btn"><i class="far fa-edit"></i></button>
+            <button id="share-event-btn"><i class="fas fa-share"></i></button>
+        </div>
+        <div id="share-event">
+            <form id="share">
+                <input type="hidden" id="share-token" name="token" value="">
+                <input type="hidden" id="share-recaptcha-token" name="recaptcha-token" value="">
+                <input type="text" id="user-search" placeholder="Type username..." autocomplete="off" required>
+                <button id="confirm-share">Share</button>
+                <p id="share-success">
+            </form>
         </div>
         <div id="event-editor">
             <form id="edit-event">
@@ -164,7 +174,6 @@
                         </ul>
                     </div>
                 </div>
-
                 <button type="submit" id="save-event">Save</button>
                 <button type="button" id="cancel-edit">Cancel</button>
             </form>
