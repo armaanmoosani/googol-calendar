@@ -2,7 +2,8 @@
 # CSE330
 Armaan Moosani 520302 @armaanmoosani
 http://ec2-3-133-108-91.us-east-2.compute.amazonaws.com/~armaanmoosani/module5/index.html
-My creative portion includes adding invisible recaptcha for forms, adding the ability for users to "tag" an event when creating and editing, and the user can filter calendar events by tag.
+
+My creative portion includes adding invisible recaptcha for forms, adding the ability for users to "tag" an event when creating and editing, and the user can filter calendar events by tag. The user can also add and edit a location to the events powered by google maps api. Lastly, a user can share events to another user. 
 
 
 
