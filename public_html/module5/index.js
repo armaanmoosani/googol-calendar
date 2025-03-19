@@ -25,6 +25,7 @@ function loginAjax() {
         .then(result => {
             if (result.success) {
                 document.getElementById("myNav").style.height = "0%";
+                document.body.style.overflow = 'auto';
                 checkLoginStatus();
                 updateCalendar();
             } else {
@@ -74,6 +75,7 @@ function signupAjax() {
             if (result.success) {
                 let signupCurtain = document.getElementById("signupCurtain");
                 signupCurtain.classList.remove("active");
+                document.body.style.overflow = 'auto';
                 checkLoginStatus();
             } else {
                 document.getElementById("signup-message").textContent = result.message;
